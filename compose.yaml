@@ -6,6 +6,7 @@ services:
       - 9001:80
     volumes:
       - ./www:/var/www/html
+      - ./vendor:/var/www/html/vendor:ro
     environment:
       DB_HOST: db
       DB_PORT: "3306"
@@ -18,22 +19,24 @@ services:
 
   db:
     image: mysql:8.4
-    restart: unless-stopped
+    restart: always
+    command: --init-file=/init.sql
     ports:
       - 3306:3306
     environment:
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: smarty
       MYSQL_USER: smarty
       MYSQL_PASSWORD: smarty
     volumes:
-      - db-data:/var/lib/mysql
-      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - db-data-mysql84:/var/lib/mysql
+      - ./docker/mysql/init.sql:/init.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 60s
 
 volumes:
-  db-data:
+  db-data-mysql84:

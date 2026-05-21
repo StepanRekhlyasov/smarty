@@ -1,0 +1,16 @@
+{
+    "name": "smarty/demo-app",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "smarty/smarty": "^5.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Smarty\\": "www/src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -2,13 +2,16 @@
 
 namespace Smarty\Controllers;
 
+use PDO;
+
 class RouterController
 {
     public array $routes = [];
 
-    public function __construct(array $routes)
+    public function __construct(array $routes, public PDO $db)
     {
         $this->routes = $routes;
+        $this->db = $db;
     }
 
     /**
@@ -27,6 +30,7 @@ class RouterController
         header('Content-Type: text/html; charset=utf-8');
         extract($params, EXTR_SKIP);
         require __DIR__ . '/../View/templates/header.php';
+        $db = $this->db;
         require $templateFile;
         require __DIR__ . '/../View/templates/footer.php';
     }

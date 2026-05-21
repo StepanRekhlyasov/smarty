@@ -1,5 +1,7 @@
 <?php
 
+require __DIR__ . '/vendor/autoload.php';
+
 spl_autoload_register(static function (string $class): void {
     $prefix = 'Smarty\\';
     $baseDir = __DIR__ . '/src/';
@@ -21,6 +23,5 @@ use Smarty\Controllers\RouterController;
 
 $db = DatabaseConfig::connect();
 $routes = require __DIR__ . '/src/routes.php';
-$router = new RouterController($routes);
-
+$router = new RouterController($routes, $db);
 $router->dispatch($_SERVER['REQUEST_URI']);

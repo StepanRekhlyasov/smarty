@@ -13,6 +13,16 @@
 # most recent version of that tag when you build your Dockerfile.
 # If reproducibility is important, consider using a specific digest SHA, like
 # php@sha256:99cede493dfd88720b610eb8077c8688d3cca50003d76d1d539b0efc8cca72b4.
+FROM composer:2 AS composer
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader
+
+COPY www/ www/
+RUN composer dump-autoload --optimize --no-dev
+
 FROM php:8.5-apache
 
 # Your PHP application may require additional PHP extensions to be installed
@@ -50,8 +60,8 @@ RUN docker-php-ext-install pdo_mysql mysqli \
 COPY docker/apache/rewrite.conf /etc/apache2/conf-available/smarty-rewrite.conf
 RUN a2enconf smarty-rewrite
 
-# Copy app files from the app directory.
-COPY www/ /var/www/html/
+COPY --from=composer /app/www/ /var/www/html/
+COPY --from=composer /app/vendor/ /var/www/html/vendor/
 
 # Switch to a non-privileged user (defined in the base image) that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
