@@ -121,7 +121,7 @@ class RouterController
     {
         $smarty = new SmartyEngine();
         $viewDir = __DIR__ . '/../View';
-        $varDir = dirname(__DIR__, 2) . '/var/smarty';
+        $varDir = getenv('SMARTY_VAR_DIR') ?: dirname(__DIR__, 3) . '/var/smarty';
 
         $smarty->setTemplateDir($viewDir);
         $smarty->setCompileDir($varDir . '/compile');

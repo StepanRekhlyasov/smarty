@@ -7,7 +7,9 @@ services:
     volumes:
       - ./www:/var/www/html
       - ./vendor:/var/www/html/vendor:ro
+      - ./var/smarty:/var/smarty
     environment:
+      SMARTY_VAR_DIR: /var/smarty
       DB_HOST: db
       DB_PORT: "3306"
       DB_NAME: smarty
