@@ -3,36 +3,42 @@
 namespace Smarty\Controllers;
 
 use PDO;
+use Smarty\Smarty as SmartyEngine;
 
 class RouterController
 {
-    public array $routes = [];
+    private SmartyEngine $smarty;
 
-    public function __construct(array $routes, public PDO $db)
+    public function __construct(public array $routes, public PDO $db)
     {
-        $this->routes = $routes;
-        $this->db = $db;
+        $this->smarty = $this->createSmarty();
     }
 
     /**
-     * @param array<string, string> $params Variables passed into the template (from URL segments).
+     * @param array<string, string> $params
      */
     public function render(string $page, array $params = [], string $title = '', string $description = ''): void
     {
         $page = basename($page);
-        $templateFile = __DIR__ . '/../View/Pages/' . $page . '.php';
+        $pageTemplate = 'pages/' . $page . '.tpl';
 
-        if (!is_file($templateFile)) {
+        if (!$this->smarty->templateExists($pageTemplate)) {
             $this->notFound($page, 'Template');
             return;
         }
 
+        $this->smarty->assign('page', $page);
+        $this->smarty->assign('title', $title);
+        $this->smarty->assign('description', $description);
+        foreach ($params as $name => $value) {
+            $this->smarty->assign($name, $value);
+        }
+        foreach ($this->preparePageData($page, $params) as $name => $value) {
+            $this->smarty->assign($name, $value);
+        }
+
         header('Content-Type: text/html; charset=utf-8');
-        extract($params, EXTR_SKIP);
-        require __DIR__ . '/../View/templates/header.php';
-        $db = $this->db;
-        require $templateFile;
-        require __DIR__ . '/../View/templates/footer.php';
+        $this->smarty->display('layout.tpl');
     }
 
     public function dispatch(string $uri): void
@@ -49,7 +55,7 @@ class RouterController
     }
 
     /**
-     * @return array{page: string, params: array<string, string>}|null
+     * @return array{page: string, params: array<string, string>, title: string, description: string}|null
      */
     private function match(string $path): ?array
     {
@@ -103,10 +109,63 @@ class RouterController
     private function notFound(string $path, string $what): void
     {
         http_response_code(404);
+        $this->smarty->assign('path', $path);
+        $this->smarty->assign('what', $what);
+        $this->smarty->assign('title', '404');
+        $this->smarty->assign('description', 'Not found');
         header('Content-Type: text/html; charset=utf-8');
-        echo '<!DOCTYPE html><html><head><title>404</title></head><body>';
-        echo '<h1>404 Not Found</h1>';
-        echo '<p>' . $what . ' not found: ' . htmlspecialchars($path, ENT_QUOTES, 'UTF-8') . '</p>';
-        echo '</body></html>';
+        $this->smarty->display('404.tpl');
+    }
+
+    private function createSmarty(): SmartyEngine
+    {
+        $smarty = new SmartyEngine();
+        $viewDir = __DIR__ . '/../View';
+        $varDir = dirname(__DIR__, 2) . '/var/smarty';
+
+        $smarty->setTemplateDir($viewDir);
+        $smarty->setCompileDir($varDir . '/compile');
+        $smarty->setCacheDir($varDir . '/cache');
+
+        return $smarty;
+    }
+
+    /**
+     * @param array<string, string> $params
+     * @return array<string, mixed>
+     */
+    private function preparePageData(string $page, array $params): array
+    {
+        return match ($page) {
+            'article' => ['article' => $this->fetchArticle($params['id'] ?? '')],
+            'category' => ['category' => $this->fetchCategory($params['id'] ?? '')],
+            default => [],
+        };
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function fetchArticle(string $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM articles WHERE id = ?');
+        $stmt->execute([(int) $id]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row !== false ? $row : null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function fetchCategory(string $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM categories WHERE id = ?');
+        $stmt->execute([(int) $id]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row !== false ? $row : null;
     }
 }
