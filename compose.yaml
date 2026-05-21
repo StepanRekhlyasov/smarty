@@ -1,0 +1,39 @@
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - 9001:80
+    volumes:
+      - ./www:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: smarty
+      DB_USER: smarty
+      DB_PASSWORD: smarty
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: smarty
+      MYSQL_USER: smarty
+      MYSQL_PASSWORD: smarty
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  db-data:
