@@ -40,6 +40,7 @@
         // Open buttons
         var btnArticle  = document.getElementById('btn-create-article');
         var btnCategory = document.getElementById('btn-create-category');
+        var btnUpload   = document.getElementById('btn-upload-data');
 
         if (btnArticle) {
             btnArticle.addEventListener('click', function () {
@@ -50,6 +51,14 @@
         if (btnCategory) {
             btnCategory.addEventListener('click', function () {
                 openModal('modal-category');
+            });
+        }
+
+        if (btnUpload) {
+            btnUpload.addEventListener('click', function () {
+                document.getElementById('upload-result').style.display = 'none';
+                document.getElementById('form-upload').style.display   = '';
+                openModal('modal-upload');
             });
         }
 
@@ -143,7 +152,66 @@
             });
         }
 
-        // ── Tooltip ───────────────────────────────────────────────────────────
+        // ── Upload form ───────────────────────────────────────────────────────
+
+        var formUpload = document.getElementById('form-upload');
+        if (formUpload) {
+            formUpload.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                var fileInput = this.querySelector('input[type="file"]');
+                if (!fileInput.files.length) {
+                    showError(this, 'Выберите файл');
+                    return;
+                }
+
+                var btn = this.querySelector('[type="submit"]');
+                setLoading(btn, true);
+
+                try {
+                    var formData = new FormData(this);
+                    var res      = await fetch('/api/upload/', { method: 'POST', body: formData });
+                    var data     = await res.json();
+
+                    var resultEl = document.getElementById('upload-result');
+                    formUpload.style.display = 'none';
+                    resultEl.style.display   = '';
+
+                    if (data.success) {
+                        resultEl.innerHTML =
+                            '<div class="upload-success">' +
+                            '<div class="upload-success__icon">✅</div>' +
+                            '<strong>Данные загружены успешно!</strong><br><br>' +
+                            'Создано категорий: <strong>' + data.created_categories + '</strong><br>' +
+                            'Создано статей: <strong>' + data.created_articles + '</strong><br><br>' +
+                            '<button class="btn btn-primary" onclick="window.location.reload()">Обновить страницу</button>' +
+                            '</div>';
+                    } else {
+                        var details = '';
+                        if (data.details && data.details.length) {
+                            details = '<ul class="upload-error-list">' +
+                                data.details.map(function (d) { return '<li>' + d + '</li>'; }).join('') +
+                                '</ul>';
+                        }
+                        resultEl.innerHTML =
+                            '<div class="form-error" style="margin:0 0 16px;">' +
+                            '<strong>' + (data.error || 'Ошибка') + '</strong>' +
+                            details +
+                            '</div>' +
+                            '<button class="btn btn-outline" onclick="' +
+                            'document.getElementById(\'upload-result\').style.display=\'none\';' +
+                            'document.getElementById(\'form-upload\').style.display=\'\';' +
+                            '">← Назад</button>';
+                        setLoading(btn, false);
+                    }
+                } catch (err) {
+                    showError(this, 'Ошибка соединения с сервером');
+                    setLoading(btn, false);
+                }
+            });
+        }
+
+        // ── Tooltip ───────────────────────────────────────────────────────
 
         var tooltipTriggers = document.querySelectorAll('[data-tooltip]');
         tooltipTriggers.forEach(function (trigger) {

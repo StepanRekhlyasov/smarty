@@ -16,7 +16,35 @@
             <button id="btn-create-category" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);" type="button">
                 🗂 Создать категорию
             </button>
+            <button id="btn-upload-data" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);" type="button">
+                📥 Загрузить данные
+            </button>
         </div>
+    </div>
+</div>
+
+{* ── Modal: Загрузить данные ───────────────────────────────── *}
+<div id="modal-upload" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-upload-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window modal__window--sm">
+        <div class="modal__header">
+            <h2 id="modal-upload-title">Загрузить данные</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <form id="form-upload" class="modal__form" enctype="multipart/form-data" novalidate>
+            <div class="form-group">
+                <label for="upload-file">JSON-файл *</label>
+                <input id="upload-file" type="file" name="json_file" accept=".json,application/json" required>
+                <div class="upload-hint">
+                    Структура записи: <code>{ldelim}"type":"article"|"category", ...поля...{rdelim}</code><br>
+                    Статьи ссылаются на категории по полю <code>"categories": ["Название"]</code><br>
+                    Категории обрабатываются первыми.
+                    <a href="/mock-data.json" download style="color:#2d6a4f;font-weight:600;">Скачать пример файла</a>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Загрузить</button>
+        </form>
+        <div id="upload-result" style="display:none;" class="modal__form" style="padding-top:0;"></div>
     </div>
 </div>
 
