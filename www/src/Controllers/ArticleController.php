@@ -171,4 +171,17 @@ final class ArticleController
 
         return (int) DatabaseController::db()->lastInsertId();
     }
+
+    public function delete(int $id): bool
+    {
+        $db = DatabaseController::db();
+
+        $stmt = $db->prepare('DELETE FROM articles_categories WHERE article_id = ?');
+        $stmt->execute([$id]);
+
+        $stmt = $db->prepare('DELETE FROM articles WHERE id = ?');
+        $stmt->execute([$id]);
+
+        return $stmt->rowCount() > 0;
+    }
 }

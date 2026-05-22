@@ -9,6 +9,9 @@
     {if $page === 'home'}
     <script src="/assets/js/home.js" defer></script>
     {/if}
+    {if $page === 'article'}
+    <script src="/assets/js/article.js" defer></script>
+    {/if}
 </head>
 <body>
 

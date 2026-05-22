@@ -18,6 +18,14 @@
             {/foreach}
             <span>📅 {$article->createdAt|truncate:10:'':''}</span>
             <span>👁 {$article->viewsCount} просмотров</span>
+            <button
+                id="btn-delete-article"
+                class="btn-delete-article"
+                type="button"
+                aria-label="Удалить статью"
+                data-article-id="{$article->id}"
+                title="Удалить статью"
+            >🗑</button>
         </div>
 
         <h1 class="article-hero__title">{$article->title|escape:'html'}</h1>
@@ -90,6 +98,23 @@
             {/if}
 
         </aside>
+    </div>
+</div>
+
+<div id="modal-delete-confirm" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window modal__window--sm">
+        <div class="modal__header">
+            <h2 id="modal-delete-title">Удалить статью?</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <div class="modal__body">
+            <p class="modal__confirm-text">Это действие необратимо. Статья будет удалена навсегда.</p>
+            <div class="modal__confirm-actions">
+                <button id="btn-confirm-delete" class="btn btn-danger" type="button">Да, удалить</button>
+                <button class="btn btn-outline" type="button" data-modal-close>Нет, отмена</button>
+            </div>
+        </div>
     </div>
 </div>
 

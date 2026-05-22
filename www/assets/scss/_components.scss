@@ -567,6 +567,62 @@
     flex-wrap:       wrap;
 }
 
+// ── Delete article button ─────────────────────────────
+.btn-delete-article {
+    display:       inline-flex;
+    align-items:   center;
+    justify-content: center;
+    background:    transparent;
+    border:        none;
+    cursor:        pointer;
+    font-size:     16px;
+    padding:       2px 6px;
+    border-radius: $radius-sm;
+    opacity:       .55;
+    transition:    opacity $transition, background $transition;
+    line-height:   1;
+    vertical-align: middle;
+
+    &:hover {
+        opacity:    1;
+        background: rgba(192, 57, 43, .1);
+    }
+}
+
+// ── Danger button ─────────────────────────────────────
+.btn-danger {
+    background: #c0392b;
+    color:      $white;
+    border:     none;
+
+    &:hover {
+        background: #a93226;
+        transform:  translateY(-1px);
+        box-shadow: $shadow;
+    }
+}
+
+// ── Confirm modal ─────────────────────────────────────
+.modal__window--sm {
+    max-width: 400px;
+}
+
+.modal__body {
+    padding: 0 24px 24px;
+}
+
+.modal__confirm-text {
+    font-size:     15px;
+    color:         $text-muted;
+    margin-bottom: 20px;
+    line-height:   1.6;
+}
+
+.modal__confirm-actions {
+    display: flex;
+    gap:     12px;
+}
+
 // ── Not found ────────────────────────────────────────
 .not-found {
     text-align: center;
