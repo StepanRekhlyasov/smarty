@@ -142,10 +142,78 @@ class RouterController
     private function preparePageData(string $page, array $params): array
     {
         return match ($page) {
-            'article' => ['article' => $this->articleController->findById((int) ($params['id'] ?? 0))],
-            'category' => ['category' => $this->categoryController->findById((int) ($params['id'] ?? 0))],
-            'home' => ['articles' => $this->articleController->list(), 'categories' => $this->categoryController->list()],
+            'home' => $this->homeData(),
+            'article' => $this->articleData((int) ($params['id'] ?? 0)),
+            'category' => $this->categoryData((int) ($params['id'] ?? 0)),
             default => [],
         };
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function homeData(): array
+    {
+        $categories = $this->categoryController->listWithArticles();
+        $sections = [];
+
+        foreach ($categories as $category) {
+            $articles = $this->articleController->findLatestByCategory((int) $category['id'], 3);
+            if (!empty($articles)) {
+                $sections[] = ['category' => $category, 'articles' => $articles];
+            }
+        }
+
+        return ['sections' => $sections];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function articleData(int $id): array
+    {
+        $article = $this->articleController->findById($id);
+
+        if ($article === null) {
+            return ['article' => null];
+        }
+
+        $this->articleController->incrementViews($id);
+        $article['views_count']++;
+
+        return [
+            'article' => $article,
+            'articleCategories' => $this->articleController->findCategoriesByArticleId($id),
+            'similar' => $this->articleController->findSimilar($id, 3),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function categoryData(int $id): array
+    {
+        $category = $this->categoryController->findById($id);
+
+        if ($category === null) {
+            return ['category' => null];
+        }
+
+        $allowedSorts = ['date', 'views'];
+        $sort = in_array($_GET['sort'] ?? '', $allowedSorts, true) ? $_GET['sort'] : 'date';
+        $perPage = 6;
+        $totalCount = $this->articleController->countByCategory($id);
+        $totalPages = max(1, (int) ceil($totalCount / $perPage));
+        $currentPage = max(1, min($totalPages, (int) ($_GET['page'] ?? 1)));
+
+        return [
+            'category' => $category,
+            'articles' => $this->articleController->findByCategoryPaginated($id, $currentPage, $perPage, $sort),
+            'sort' => $sort,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'totalCount' => $totalCount,
+            'perPage' => $perPage,
+        ];
     }
 }
