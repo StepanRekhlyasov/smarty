@@ -568,6 +568,51 @@
     flex-wrap:       wrap;
 }
 
+// ── Edit / Delete article buttons ────────────────────
+.btn-edit {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    width:           26px;
+    height:          26px;
+    background:      transparent;
+    border:          1.5px solid rgba(45, 106, 79, .35);
+    border-radius:   50%;
+    cursor:          pointer;
+    font-size:       13px;
+    line-height:     1;
+    vertical-align:  middle;
+    flex-shrink:     0;
+    transition:      background $transition, border-color $transition;
+
+    &:hover {
+        background:   $green-pale;
+        border-color: $green;
+    }
+}
+
+// ── Current image preview (edit modal) ───────────────
+.current-image-preview {
+    display:     flex;
+    align-items: center;
+    gap:         10px;
+    margin-top:  8px;
+
+    &__label {
+        font-size:   12px;
+        color:       $text-muted;
+        white-space: nowrap;
+    }
+
+    img {
+        height:        56px;
+        width:         auto;
+        border-radius: $radius-sm;
+        border:        1px solid $border;
+        object-fit:    cover;
+    }
+}
+
 // ── Delete article button ─────────────────────────────
 .btn-delete {
     display:         inline-flex;

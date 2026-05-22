@@ -184,10 +184,14 @@ class RouterController
             return ['article' => null];
         }
 
+        $articleCategories = $this->categoryController->findCategoriesByArticleId($id);
+
         return [
-            'article' => $article,
-            'articleCategories' => $this->categoryController->findCategoriesByArticleId($id),
-            'similar' => $this->articleController->findSimilar($id, 3),
+            'article'            => $article,
+            'articleCategories'  => $articleCategories,
+            'articleCategoryIds' => array_map(fn ($c) => $c->id, $articleCategories),
+            'allCategories'      => $this->categoryController->list(),
+            'similar'            => $this->articleController->findSimilar($id, 3),
         ];
     }
 

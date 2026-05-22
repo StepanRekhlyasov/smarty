@@ -162,6 +162,26 @@ final class ArticleController
         }
     }
 
+    public function update(int $id, string $title, string $content, string $description, ?string $imageUrl, bool $imageChanged): void
+    {
+        if ($imageChanged) {
+            $stmt = DatabaseController::db()->prepare('SELECT image_url FROM articles WHERE id = ?');
+            $stmt->execute([$id]);
+            $oldImageUrl = $stmt->fetchColumn() ?: null;
+            $this->removeUploadedImage($oldImageUrl);
+
+            $stmt = DatabaseController::db()->prepare(
+                'UPDATE articles SET title = ?, content = ?, description = ?, image_url = ? WHERE id = ?',
+            );
+            $stmt->execute([$title, $content, $description, $imageUrl, $id]);
+        } else {
+            $stmt = DatabaseController::db()->prepare(
+                'UPDATE articles SET title = ?, content = ?, description = ? WHERE id = ?',
+            );
+            $stmt->execute([$title, $content, $description, $id]);
+        }
+    }
+
     public function create(string $title, string $content, string $description, ?string $imageUrl = null): int
     {
         $stmt = DatabaseController::db()->prepare(

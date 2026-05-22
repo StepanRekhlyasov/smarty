@@ -87,6 +87,14 @@ final class CategoryController
         return (int) DatabaseController::db()->lastInsertId();
     }
 
+    public function update(int $id, string $title, string $description): void
+    {
+        $stmt = DatabaseController::db()->prepare(
+            'UPDATE categories SET title = ?, description = ? WHERE id = ?',
+        );
+        $stmt->execute([$title, $description, $id]);
+    }
+
     /**
      * Articles that belong ONLY to this category (will be deleted with it).
      */

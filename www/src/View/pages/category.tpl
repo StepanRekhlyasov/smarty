@@ -14,6 +14,13 @@
         <div class="page-hero__title-row">
             <h1 class="page-hero__title">{$category->title|escape:'html'|capitalize}</h1>
             <button
+                id="btn-edit-category"
+                class="btn-edit"
+                type="button"
+                aria-label="Редактировать категорию"
+                title="Редактировать"
+            >✏️</button>
+            <button
                 id="btn-delete-category"
                 class="btn-delete"
                 type="button"
@@ -110,6 +117,28 @@
             </div>
         {/if}
 
+    </div>
+</div>
+
+<div id="modal-edit-category" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-edit-cat-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window modal__window--sm">
+        <div class="modal__header">
+            <h2 id="modal-edit-cat-title">Редактировать категорию</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <form id="form-edit-category" class="modal__form" novalidate>
+            <input type="hidden" name="id" value="{$category->id}">
+            <div class="form-group">
+                <label for="ec-title">Название *</label>
+                <input id="ec-title" type="text" name="title" value="{$category->title|escape:'html'}" required>
+            </div>
+            <div class="form-group">
+                <label for="ec-description">Описание</label>
+                <textarea id="ec-description" name="description" rows="3">{$category->description|escape:'html'}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Сохранить</button>
+        </form>
     </div>
 </div>
 

@@ -19,6 +19,13 @@
             <span>📅 {$article->createdAt|truncate:10:'':''}</span>
             <span>👁 {$article->viewsCount} просмотров</span>
             <button
+                id="btn-edit-article"
+                class="btn-edit"
+                type="button"
+                aria-label="Редактировать статью"
+                title="Редактировать"
+            >✏️</button>
+            <button
                 id="btn-delete-article"
                 class="btn-delete"
                 type="button"
@@ -98,6 +105,78 @@
             {/if}
 
         </aside>
+    </div>
+</div>
+
+<div id="modal-edit-article" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-edit-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window">
+        <div class="modal__header">
+            <h2 id="modal-edit-title">Редактировать статью</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <form id="form-edit-article" class="modal__form" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="id" value="{$article->id}">
+
+            <div class="form-group">
+                <label for="e-title">Заголовок *</label>
+                <input id="e-title" type="text" name="title" value="{$article->title|escape:'html'}" required>
+            </div>
+            <div class="form-group">
+                <label for="e-description">Краткое описание *</label>
+                <input id="e-description" type="text" name="description" value="{$article->description|escape:'html'}" required>
+            </div>
+            <div class="form-group">
+                <label for="e-content">Контент *</label>
+                <textarea id="e-content" name="content" rows="6" required>{$article->content|escape:'html'}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Изображение</label>
+                <div class="image-source-toggle">
+                    <label><input type="radio" name="image_type" value="keep" checked> Оставить текущее</label>
+                    <label><input type="radio" name="image_type" value="url"> Новый URL</label>
+                    <label><input type="radio" name="image_type" value="file"> Загрузить файл</label>
+                </div>
+                <div id="edit-image-url-section" style="display:none;">
+                    <div class="url-input-wrap">
+                        <input
+                            id="e-image-url"
+                            type="url"
+                            name="image_url"
+                            placeholder="https://picsum.photos/seed/forest"
+                            value="{$article->imageUrl|escape:'html'}"
+                            data-tooltip="Если указать URL вида https://picsum.photos/seed/… — изображение автоматически подгоняется под три размера: превью (140×100), миниатюра (360×200) и оригинал (1200×500)."
+                        >
+                    </div>
+                </div>
+                <div id="edit-image-file-section" style="display:none;">
+                    <input type="file" name="image_file" accept="image/*">
+                </div>
+                {if $article->imageUrl}
+                    <div id="edit-current-image" class="current-image-preview">
+                        <span class="current-image-preview__label">Текущее:</span>
+                        <img src="{$article->getImage('thumbnail')}" alt="Текущее изображение">
+                    </div>
+                {/if}
+            </div>
+
+            <div class="form-group">
+                <label>Категории *</label>
+                {if $allCategories}
+                    <div class="categories-grid">
+                        {foreach $allCategories as $cat}
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="categories[]" value="{$cat->id}"{if in_array($cat->id, $articleCategoryIds)} checked{/if}>
+                                {$cat->title|escape:'html'}
+                            </label>
+                        {/foreach}
+                    </div>
+                {/if}
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Сохранить</button>
+        </form>
     </div>
 </div>
 
