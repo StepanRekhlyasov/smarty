@@ -22,6 +22,7 @@ services:
   db:
     image: mysql:8.4
     restart: always
+    # Reset database state on MySQL restart
     command: --init-file=/init.sql
     ports:
       - 3306:3306

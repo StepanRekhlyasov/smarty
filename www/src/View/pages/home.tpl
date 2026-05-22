@@ -35,7 +35,7 @@
                         <a href="/article/{$article.id}" class="card">
                             <img
                                 class="card__img"
-                                src="{$article.preview_image_url}"
+                                src="{$article.image_url}/360/200"
                                 alt="{$article.title|escape:'html'}"
                                 loading="lazy"
                             >

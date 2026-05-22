@@ -35,7 +35,7 @@
 
         <img
             class="article-hero__img"
-            src="{$article.image_url}"
+            src="{$article.image_url}/1200/500"
             alt="{$article.title|escape:'html'}"
             width="1200"
             height="500"
@@ -73,7 +73,7 @@
                             <a href="/article/{$sim.id}" class="similar-item">
                                 <img
                                     class="similar-img"
-                                    src="{$sim.preview_image_url}"
+                                    src="{$sim.image_url}/140/100"
                                     alt="{$sim.title|escape:'html'}"
                                     loading="lazy"
                                     width="140"
