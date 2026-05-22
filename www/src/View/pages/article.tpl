@@ -20,12 +20,12 @@
             <span>👁 {$article->viewsCount} просмотров</span>
             <button
                 id="btn-delete-article"
-                class="btn-delete-article"
+                class="btn-delete"
                 type="button"
                 aria-label="Удалить статью"
                 data-article-id="{$article->id}"
                 title="Удалить статью"
-            >🗑</button>
+            >✕</button>
         </div>
 
         <h1 class="article-hero__title">{$article->title|escape:'html'}</h1>

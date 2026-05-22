@@ -210,13 +210,15 @@ class RouterController
         $currentPage = max(1, min($totalPages, (int) ($_GET['page'] ?? 1)));
 
         return [
-            'category' => $category,
-            'articles' => $this->articleController->findByCategoryPaginated($id, $currentPage, $perPage, $sort),
-            'sort' => $sort,
-            'currentPage' => $currentPage,
-            'totalPages' => $totalPages,
-            'totalCount' => $totalCount,
-            'perPage' => $perPage,
+            'category'       => $category,
+            'articles'       => $this->articleController->findByCategoryPaginated($id, $currentPage, $perPage, $sort),
+            'sort'           => $sort,
+            'currentPage'    => $currentPage,
+            'totalPages'     => $totalPages,
+            'totalCount'     => $totalCount,
+            'perPage'        => $perPage,
+            'exclusiveCount' => $this->categoryController->countExclusiveArticles($id),
+            'sharedCount'    => $this->categoryController->countSharedArticles($id),
         ];
     }
 }

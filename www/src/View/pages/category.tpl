@@ -11,7 +11,17 @@
 <div class="page-hero">
     <div class="container">
         <div class="page-hero__eyebrow">Категория</div>
-        <h1 class="page-hero__title">{$category->title|escape:'html'|capitalize}</h1>
+        <div class="page-hero__title-row">
+            <h1 class="page-hero__title">{$category->title|escape:'html'|capitalize}</h1>
+            <button
+                id="btn-delete-category"
+                class="btn-delete"
+                type="button"
+                aria-label="Удалить категорию"
+                data-category-id="{$category->id}"
+                title="Удалить категорию"
+            >✕</button>
+        </div>
         {if $category->description}
             <p class="page-hero__desc">{$category->description|escape:'html'}</p>
         {/if}
@@ -100,6 +110,41 @@
             </div>
         {/if}
 
+    </div>
+</div>
+
+<div id="modal-delete-confirm" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window modal__window--sm">
+        <div class="modal__header">
+            <h2 id="modal-delete-title">Удалить категорию?</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <div class="modal__body">
+            <div class="delete-warning">
+                {if $exclusiveCount > 0}
+                    <div class="delete-warning__item delete-warning__item--danger">
+                        🗑 <strong>{$exclusiveCount} {if $exclusiveCount == 1}статья будет удалена навсегда{elseif $exclusiveCount >= 2 && $exclusiveCount <= 4}статьи будут удалены навсегда{else}статей будут удалены навсегда{/if}</strong>
+                        — {if $exclusiveCount == 1}она прикреплена{else}они прикреплены{/if} <em>только</em> к этой категории и больше нигде не числяются.
+                    </div>
+                {/if}
+                {if $sharedCount > 0}
+                    <div class="delete-warning__item delete-warning__item--safe">
+                        ✅ <strong>{$sharedCount} {if $sharedCount == 1}статья останется{elseif $sharedCount >= 2 && $sharedCount <= 4}статьи останутся{else}статей останутся{/if}</strong>
+                        — {if $sharedCount == 1}она прикреплена{else}они прикреплены{/if} к другим категориям и удалены не будут.
+                    </div>
+                {/if}
+                {if $exclusiveCount == 0 && $sharedCount == 0}
+                    <div class="delete-warning__item delete-warning__item--safe">
+                        ✅ В этой категории нет статей — она будет удалена без последствий.
+                    </div>
+                {/if}
+            </div>
+            <div class="modal__confirm-actions">
+                <button id="btn-confirm-delete" class="btn btn-danger" type="button">Да, удалить</button>
+                <button class="btn btn-outline" type="button" data-modal-close>Нет, отмена</button>
+            </div>
+        </div>
     </div>
 </div>
 
