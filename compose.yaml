@@ -1,4 +1,11 @@
 services:
+  composer:
+    image: composer:2
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: install --no-dev --optimize-autoloader
+
   server:
     build:
       context: .
@@ -18,6 +25,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      composer:
+        condition: service_completed_successfully
 
   db:
     image: mysql:8.4
