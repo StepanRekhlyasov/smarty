@@ -46,4 +46,17 @@ final class Article
             'created_at' => $this->createdAt,
         ];
     }
+
+    public function getImage(string $type): string
+    {
+        if (strpos($this->imageUrl, 'https://picsum.photos/') === 0) {
+            return match ($type) {
+                'preview' => $this->imageUrl . '/140/100',
+                'thumbnail' => $this->imageUrl . '/360/200',
+                'original' => $this->imageUrl . '/1200/500',
+            };
+        }
+
+        return $this->imageUrl;
+    }
 }

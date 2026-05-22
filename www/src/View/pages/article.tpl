@@ -14,20 +14,20 @@
         <div class="article-meta-bar">
             <a href="/">← Главная</a> |
             {foreach $articleCategories as $cat}
-                <a href="/category/{$cat.id}">#{$cat.title|escape:'html'}</a> |
+                <a href="/category/{$cat->id}">#{$cat->title|escape:'html'}</a> |
             {/foreach}
-            <span>📅 {$article.created_at|truncate:10:'':''}</span>
-            <span>👁 {$article.views_count} просмотров</span>
+            <span>📅 {$article->createdAt|truncate:10:'':''}</span>
+            <span>👁 {$article->viewsCount} просмотров</span>
         </div>
 
-        <h1 class="article-hero__title">{$article.title|escape:'html'}</h1>
-        <p class="article-hero__desc">{$article.description|escape:'html'}</p>
+        <h1 class="article-hero__title">{$article->title|escape:'html'}</h1>
+        <p class="article-hero__desc">{$article->description|escape:'html'}</p>
 
         {if $articleCategories}
             <div class="tags">
                 {foreach $articleCategories as $cat}
-                    <a href="/category/{$cat.id}" class="tag tag-light">
-                        {$cat.title|escape:'html'}
+                    <a href="/category/{$cat->id}" class="tag tag-light">
+                        {$cat->title|escape:'html'}
                     </a>
                 {/foreach}
             </div>
@@ -35,8 +35,8 @@
 
         <img
             class="article-hero__img"
-            src="{$article.image_url}/1200/500"
-            alt="{$article.title|escape:'html'}"
+            src="{$article->getImage('original')}"
+            alt="{$article->title|escape:'html'}"
             width="1200"
             height="500"
         >
@@ -47,7 +47,7 @@
     <div class="article-layout">
 
         <article class="article-content">
-            <p>{$article.content|escape:'html'|nl2br}</p>
+            <p>{$article->content|escape:'html'|nl2br}</p>
         </article>
 
         <aside class="sidebar">
@@ -57,8 +57,8 @@
                     <div class="sidebar__title">Категории</div>
                     <div class="tags">
                         {foreach $articleCategories as $cat}
-                            <a href="/category/{$cat.id}" class="tag tag-green">
-                                {$cat.title|escape:'html'}
+                            <a href="/category/{$cat->id}" class="tag tag-green">
+                                {$cat->title|escape:'html'}
                             </a>
                         {/foreach}
                     </div>
@@ -70,18 +70,18 @@
                     <div class="sidebar__title">Похожие статьи</div>
                     <div class="similar-list">
                         {foreach $similar as $sim}
-                            <a href="/article/{$sim.id}" class="similar-item">
+                            <a href="/article/{$sim->id}" class="similar-item">
                                 <img
                                     class="similar-img"
-                                    src="{$sim.image_url}/140/100"
-                                    alt="{$sim.title|escape:'html'}"
+                                    src="{$sim->getImage('preview')}"
+                                    alt="{$sim->title|escape:'html'}"
                                     loading="lazy"
                                     width="140"
                                     height="100"
                                 >
                                 <div>
-                                    <div class="similar-title">{$sim.title|escape:'html'}</div>
-                                    <div class="similar-date">📅 {$sim.created_at|truncate:10:'':''}</div>
+                                    <div class="similar-title">{$sim->title|escape:'html'}</div>
+                                    <div class="similar-date">📅 {$sim->createdAt|truncate:10:'':''}</div>
                                 </div>
                             </a>
                         {/foreach}

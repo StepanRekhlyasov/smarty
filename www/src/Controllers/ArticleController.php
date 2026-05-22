@@ -3,17 +3,18 @@
 namespace Smarty\Controllers;
 
 use PDO;
+use Smarty\Models\Article;
 
 final class ArticleController
 {
-    public function findById(int $id): ?array
+    public function findById(int $id): ? Article
     {
         $stmt = DatabaseController::db()->prepare('SELECT * FROM articles WHERE id = ?');
         $stmt->execute([$id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $row !== false ? $row : null;
+        return $row !== false ? Article::fromArray($row) : null;
     }
 
     public function incrementViews(int $id): void
@@ -25,18 +26,18 @@ final class ArticleController
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<Article>
      */
     public function list(): array
     {
         $stmt = DatabaseController::db()->prepare('SELECT * FROM articles ORDER BY created_at DESC');
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn (array $article) => Article::fromArray($article), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<Article>
      */
     public function findLatestByCategory(int $categoryId, int $limit = 3): array
     {
@@ -52,11 +53,11 @@ final class ArticleController
         $stmt->bindValue(2, $limit, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn (array $article) => Article::fromArray($article), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<Article>    
      */
     public function findByCategoryPaginated(int $categoryId, int $page, int $perPage, string $sort): array
     {
@@ -76,7 +77,9 @@ final class ArticleController
         $stmt->bindValue(3, $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn (array $article) => Article::fromArray($article), $articles);
     }
 
     public function countByCategory(int $categoryId): int
@@ -93,7 +96,7 @@ final class ArticleController
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<Article>
      */
     public function findSimilar(int $articleId, int $limit = 3): array
     {
@@ -113,28 +116,11 @@ final class ArticleController
         $stmt->bindValue(3, $limit, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn (array $article) => Article::fromArray($article), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     /**
-     * @return list<array<string, mixed>>
-     */
-    public function findCategoriesByArticleId(int $articleId): array
-    {
-        $stmt = DatabaseController::db()->prepare(
-            'SELECT c.*
-             FROM categories c
-             INNER JOIN articles_categories ac ON ac.category_id = c.id
-             WHERE ac.article_id = ?
-             ORDER BY c.id',
-        );
-        $stmt->execute([$articleId]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * @return list<array<string, mixed>>
+     * @return list<Article>
      */
     public function findArticlesByCategoryId(int $categoryId): array
     {
@@ -147,7 +133,7 @@ final class ArticleController
         );
         $stmt->execute([$categoryId]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(fn (array $article) => Article::fromArray($article), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     public function attachCategory(int $articleId, int $categoryId): void

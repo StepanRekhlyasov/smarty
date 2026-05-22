@@ -3,6 +3,7 @@
 namespace Smarty\Controllers;
 
 use Smarty\Smarty as SmartyEngine;
+use Smarty\Models\Article;
 
 class RouterController
 {
@@ -158,7 +159,7 @@ class RouterController
         $sections = [];
 
         foreach ($categories as $category) {
-            $articles = $this->articleController->findLatestByCategory((int) $category['id'], 3);
+            $articles = $this->articleController->findLatestByCategory((int) $category->id, 3);
             if (!empty($articles)) {
                 $sections[] = ['category' => $category, 'articles' => $articles];
             }
@@ -172,18 +173,17 @@ class RouterController
      */
     private function articleData(int $id): array
     {
+
+        $this->articleController->incrementViews($id);
         $article = $this->articleController->findById($id);
 
         if ($article === null) {
             return ['article' => null];
         }
 
-        $this->articleController->incrementViews($id);
-        $article['views_count']++;
-
         return [
             'article' => $article,
-            'articleCategories' => $this->articleController->findCategoriesByArticleId($id),
+            'articleCategories' => $this->categoryController->findCategoriesByArticleId($id),
             'similar' => $this->articleController->findSimilar($id, 3),
         ];
     }

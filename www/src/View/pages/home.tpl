@@ -20,36 +20,38 @@
             <section style="margin-bottom: 60px;">
                 <div class="section-header">
                     <div>
-                        <h2 class="section-title">{$section.category.title|escape:'html'|capitalize}</h2>
-                        {if $section.category.description}
-                            <p class="section-desc">{$section.category.description|escape:'html'|truncate:100:'…':false}</p>
+                        <h2 class="section-title">{$section.category->title|escape:'html'|capitalize}</h2>
+                        {if $section.category->description}
+                            <p class="section-desc">{$section.category->description|escape:'html'|truncate:100:'…':false}</p>
                         {/if}
                     </div>
-                    <a href="/category/{$section.category.id}" class="btn btn-outline">
+                    <a href="/category/{$section.category->id}" class="btn btn-outline">
                         Все статьи →
                     </a>
                 </div>
 
                 <div class="articles-grid">
                     {foreach $section.articles as $article}
-                        <a href="/article/{$article.id}" class="card">
+                        <a href="/article/{$article->id}" class="card">
                             <img
                                 class="card__img"
-                                src="{$article.image_url}/360/200"
-                                alt="{$article.title|escape:'html'}"
+                                src="{$article->getImage('thumbnail')}"
+                                alt="{$article->title|escape:'html'}"
+                                width="360"
+                                height="200"
                                 loading="lazy"
                             >
                             <div class="card__body">
                                 <div class="card__meta">
                                     <span class="card__meta-item">
-                                        📅 {$article.created_at|truncate:10:'':''}
+                                        📅 {$article->createdAt|truncate:10:'':''}
                                     </span>
                                     <span class="card__meta-item">
-                                        👁 {$article.views_count}
+                                        👁 {$article->viewsCount}
                                     </span>
                                 </div>
-                                <div class="card__title">{$article.title|escape:'html'}</div>
-                                <div class="card__desc">{$article.description|escape:'html'}</div>
+                                <div class="card__title">{$article->title|escape:'html'}</div>
+                                <div class="card__desc">{$article->description|escape:'html'}</div>
                             </div>
                         </a>
                     {/foreach}
