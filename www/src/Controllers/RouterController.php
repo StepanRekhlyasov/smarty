@@ -165,7 +165,10 @@ class RouterController
             }
         }
 
-        return ['sections' => $sections];
+        return [
+            'sections'      => $sections,
+            'allCategories' => $this->categoryController->list(),
+        ];
     }
 
     /**

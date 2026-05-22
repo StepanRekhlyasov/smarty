@@ -62,4 +62,14 @@ final class CategoryController
 
         return array_map(fn (array $category) => Category::fromArray($category), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
+
+    public function create(string $title, string $description): int
+    {
+        $stmt = DatabaseController::db()->prepare(
+            'INSERT INTO categories (title, description) VALUES (?, ?)',
+        );
+        $stmt->execute([$title, $description]);
+
+        return (int) DatabaseController::db()->lastInsertId();
+    }
 }

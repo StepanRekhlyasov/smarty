@@ -6,6 +6,9 @@
     <title>{$title|escape:'html'} — Природный мир</title>
     <meta name="description" content="{$description|escape:'html'}">
     <link rel="stylesheet" href="/assets/style.php">
+    {if $page === 'home'}
+    <script src="/assets/js/home.js" defer></script>
+    {/if}
 </head>
 <body>
 

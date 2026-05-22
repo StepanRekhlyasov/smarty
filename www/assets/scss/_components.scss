@@ -327,6 +327,246 @@
     }
 }
 
+// ── Modal ────────────────────────────────────────────
+.modal {
+    display:         none;
+    position:        fixed;
+    inset:           0;
+    z-index:         900;
+    align-items:     center;
+    justify-content: center;
+    padding:         16px;
+
+    &--open {
+        display: flex;
+    }
+}
+
+.modal-open { overflow: hidden; }
+
+.modal__overlay {
+    position:   absolute;
+    inset:      0;
+    background: rgba(27, 67, 50, .55);
+    cursor:     pointer;
+    animation:  fadeIn .18s ease;
+}
+
+.modal__window {
+    position:      relative;
+    background:    $white;
+    border-radius: $radius;
+    box-shadow:    $shadow-hover;
+    width:         100%;
+    max-width:     560px;
+    max-height:    90vh;
+    overflow-y:    auto;
+    animation:     slideUp .2s ease;
+    z-index:       1;
+}
+
+@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+
+.modal__header {
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    padding:         20px 24px 0;
+    margin-bottom:   20px;
+
+    h2 {
+        font-family: $font-serif;
+        font-size:   22px;
+        font-weight: 700;
+        color:       $green-dark;
+        margin:      0;
+    }
+}
+
+.modal__close {
+    width:         32px;
+    height:        32px;
+    border:        none;
+    background:    $green-pale;
+    border-radius: 50%;
+    cursor:        pointer;
+    font-size:     16px;
+    color:         $green-dark;
+    display:       flex;
+    align-items:   center;
+    justify-content: center;
+    transition:    background $transition;
+    flex-shrink:   0;
+
+    &:hover { background: $border; }
+}
+
+.modal__form {
+    padding: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+// ── Form elements ─────────────────────────────────────
+.form-group {
+    display:        flex;
+    flex-direction: column;
+    gap:            6px;
+
+    label:first-child {
+        font-size:   13px;
+        font-weight: 600;
+        color:       $text;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="file"],
+    textarea {
+        width:         100%;
+        padding:       9px 12px;
+        border:        1.5px solid $border;
+        border-radius: $radius-sm;
+        font-size:     14px;
+        color:         $text;
+        background:    $cream;
+        transition:    border-color $transition;
+        font-family:   $font-sans;
+        box-sizing:    border-box;
+
+        &:focus {
+            outline:      none;
+            border-color: $green-light;
+            background:   $white;
+        }
+
+        &::placeholder { color: $text-muted; }
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    input[type="file"] { padding: 6px 10px; cursor: pointer; }
+}
+
+.image-source-toggle {
+    display: flex;
+    gap:     16px;
+    font-size: 14px;
+
+    label {
+        display:     flex;
+        align-items: center;
+        gap:         6px;
+        cursor:      pointer;
+        font-weight: 500 !important;
+        color:       $text-muted;
+
+        input { cursor: pointer; accent-color: $green; }
+    }
+}
+
+.url-input-wrap {
+    position: relative;
+}
+
+// ── Tooltip ───────────────────────────────────────────
+.tooltip-trigger {
+    display:         inline-flex;
+    align-items:     center;
+    justify-content: center;
+    width:           18px;
+    height:          18px;
+    border-radius:   50%;
+    background:      $green-pale;
+    color:           $green-dark;
+    font-size:       11px;
+    font-weight:     700;
+    cursor:          help;
+    flex-shrink:     0;
+    border:          1px solid $border;
+    position:        relative;
+}
+
+.tooltip-box {
+    display:       none;
+    position:      absolute;
+    bottom:        calc(100% + 8px);
+    left:          0;
+    right:         0;
+    background:    $green-dark;
+    color:         $white;
+    font-size:     12px;
+    line-height:   1.5;
+    padding:       10px 12px;
+    border-radius: $radius-sm;
+    z-index:       10;
+    pointer-events: none;
+
+    &--visible { display: block; }
+
+    &::after {
+        content:      '';
+        position:     absolute;
+        top:          100%;
+        left:         20px;
+        border:       5px solid transparent;
+        border-top-color: $green-dark;
+    }
+}
+
+// ── Category checkboxes ───────────────────────────────
+.categories-grid {
+    display:               grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:                   6px 12px;
+    max-height:            160px;
+    overflow-y:            auto;
+    padding:               2px;
+}
+
+.checkbox-label {
+    display:     flex;
+    align-items: center;
+    gap:         7px;
+    font-size:   13px;
+    cursor:      pointer;
+    color:       $text;
+    padding:     4px 6px;
+    border-radius: $radius-sm;
+    transition:  background $transition;
+
+    &:hover { background: $green-subtle; }
+
+    input[type="checkbox"] {
+        cursor:       pointer;
+        accent-color: $green;
+        width:        15px;
+        height:       15px;
+        flex-shrink:  0;
+    }
+}
+
+// ── Form error ────────────────────────────────────────
+.form-error {
+    background:    #fff0f0;
+    border:        1px solid #ffb3b3;
+    border-radius: $radius-sm;
+    color:         #c0392b;
+    font-size:     13px;
+    padding:       10px 14px;
+}
+
+// ── Action buttons bar ────────────────────────────────
+.action-bar {
+    display:         flex;
+    justify-content: center;
+    gap:             14px;
+    padding:         28px 0 0;
+    flex-wrap:       wrap;
+}
+
 // ── Not found ────────────────────────────────────────
 .not-found {
     text-align: center;

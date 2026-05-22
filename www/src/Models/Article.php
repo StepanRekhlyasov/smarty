@@ -49,7 +49,7 @@ final class Article
 
     public function getImage(string $type): string
     {
-        if (strpos($this->imageUrl, 'https://picsum.photos/') === 0) {
+        if (is_string($this->imageUrl) && strpos($this->imageUrl, 'https://picsum.photos/') === 0) {
             return match ($type) {
                 'preview' => $this->imageUrl . '/140/100',
                 'thumbnail' => $this->imageUrl . '/360/200',
@@ -57,6 +57,6 @@ final class Article
             };
         }
 
-        return $this->imageUrl;
+        return $this->imageUrl ?? '';
     }
 }

@@ -161,4 +161,14 @@ final class ArticleController
             $this->attachCategory($articleId, (int) $categoryId);
         }
     }
+
+    public function create(string $title, string $content, string $description, ?string $imageUrl = null): int
+    {
+        $stmt = DatabaseController::db()->prepare(
+            'INSERT INTO articles (title, content, description, image_url) VALUES (?, ?, ?, ?)',
+        );
+        $stmt->execute([$title, $content, $description, $imageUrl]);
+
+        return (int) DatabaseController::db()->lastInsertId();
+    }
 }

@@ -6,9 +6,104 @@
         <h1 style="font-family:Georgia,serif;font-size:clamp(36px,5vw,62px);font-weight:700;line-height:1.15;margin-bottom:18px;letter-spacing:-.5px;">
             Мир вокруг нас
         </h1>
-        <p style="font-size:18px;opacity:.85;max-width:500px;margin:0 auto;line-height:1.7;">
+        <p style="font-size:18px;opacity:.85;max-width:500px;margin:0 auto 32px;line-height:1.7;">
             Истории о морях, горах, лесах и пустынях — в каждой статье живёт природа.
         </p>
+        <div class="action-bar">
+            <button id="btn-create-article" class="btn btn-primary" type="button">
+                ✏️ Создать статью
+            </button>
+            <button id="btn-create-category" class="btn" style="background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.45);" type="button">
+                🗂 Создать категорию
+            </button>
+        </div>
+    </div>
+</div>
+
+{* ── Modal: Создать статью ─────────────────────────────────── *}
+<div id="modal-article" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-article-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window">
+        <div class="modal__header">
+            <h2 id="modal-article-title">Создать статью</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <form id="form-article" class="modal__form" enctype="multipart/form-data" novalidate>
+            <div class="form-group">
+                <label for="a-title">Заголовок *</label>
+                <input id="a-title" type="text" name="title" placeholder="Заголовок статьи" required>
+            </div>
+            <div class="form-group">
+                <label for="a-description">Краткое описание *</label>
+                <input id="a-description" type="text" name="description" placeholder="Одним предложением" required>
+            </div>
+            <div class="form-group">
+                <label for="a-content">Контент *</label>
+                <textarea id="a-content" name="content" rows="6" placeholder="Текст статьи…" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Изображение</label>
+                <div class="image-source-toggle">
+                    <label><input type="radio" name="image_type" value="url" checked> Ссылка на изображение</label>
+                    <label><input type="radio" name="image_type" value="file"> Загрузить файл</label>
+                </div>
+                <div id="image-url-section">
+                    <div class="url-input-wrap" style="position:relative;">
+                        <input
+                            id="a-image-url"
+                            type="url"
+                            name="image_url"
+                            placeholder="https://picsum.photos/seed/forest"
+                            data-tooltip="Если указать URL вида https://picsum.photos/seed/… — изображение автоматически подгоняется под три размера: превью (140×100), миниатюра (360×200) и оригинал (1200×500)."
+                        >
+                    </div>
+                </div>
+                <div id="image-file-section" style="display:none;">
+                    <input type="file" name="image_file" accept="image/*">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Категории *</label>
+                {if $allCategories}
+                    <div class="categories-grid">
+                        {foreach $allCategories as $cat}
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="categories[]" value="{$cat->id}">
+                                {$cat->title|escape:'html'}
+                            </label>
+                        {/foreach}
+                    </div>
+                {else}
+                    <p style="font-size:13px;color:#5a7a68;">Категорий пока нет — создайте их отдельно.</p>
+                {/if}
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Создать статью</button>
+        </form>
+    </div>
+</div>
+
+{* ── Modal: Создать категорию ──────────────────────────────── *}
+<div id="modal-category" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-category-title">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__window">
+        <div class="modal__header">
+            <h2 id="modal-category-title">Создать категорию</h2>
+            <button class="modal__close" type="button" data-modal-close aria-label="Закрыть">✕</button>
+        </div>
+        <form id="form-category" class="modal__form" novalidate>
+            <div class="form-group">
+                <label for="c-title">Название *</label>
+                <input id="c-title" type="text" name="title" placeholder="Название категории" required>
+            </div>
+            <div class="form-group">
+                <label for="c-description">Описание</label>
+                <textarea id="c-description" name="description" rows="3" placeholder="Краткое описание категории…"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Создать категорию</button>
+        </form>
     </div>
 </div>
 
