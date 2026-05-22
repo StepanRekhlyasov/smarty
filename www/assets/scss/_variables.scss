@@ -1,0 +1,28 @@
+// ── Colors ──────────────────────────────────────────
+$green:        #2d6a4f;
+$green-dark:   #1b4332;
+$green-light:  #52b788;
+$green-pale:   #d8f3dc;
+$green-subtle: #f0faf4;
+$cream:        #fafdf8;
+$text:         #1a2e22;
+$text-muted:   #5a7a68;
+$border:       #c7e8d4;
+$white:        #ffffff;
+
+// ── Shadows ──────────────────────────────────────────
+$shadow-sm:    0 1px 4px rgba(27, 67, 50, .07);
+$shadow:       0 4px 18px rgba(27, 67, 50, .11);
+$shadow-hover: 0 8px 32px rgba(27, 67, 50, .17);
+
+// ── Shape & motion ───────────────────────────────────
+$radius:       14px;
+$radius-sm:    8px;
+$transition:   .2s ease;
+
+// ── Typography ───────────────────────────────────────
+$font-serif: Georgia, 'Times New Roman', serif;
+$font-sans:  -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+// ── Layout ───────────────────────────────────────────
+$container-width: 1200px;

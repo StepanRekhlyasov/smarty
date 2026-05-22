@@ -1,0 +1,82 @@
+// ── Container ────────────────────────────────────────
+.container {
+    max-width: $container-width;
+    margin:    0 auto;
+    padding:   0 24px;
+}
+
+// ── Site header ──────────────────────────────────────
+.site-header {
+    background: $green-dark;
+    position:   sticky;
+    top:        0;
+    z-index:    100;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, .18);
+}
+
+.nav {
+    max-width:       $container-width;
+    margin:          0 auto;
+    padding:         0 24px;
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    height:          64px;
+
+    &__logo {
+        font-family:     $font-serif;
+        font-size:       21px;
+        font-weight:     700;
+        color:           $white;
+        text-decoration: none;
+        letter-spacing:  .3px;
+        display:         flex;
+        align-items:     center;
+        gap:             8px;
+
+        &-leaf { font-size: 22px; }
+        span   { color: $green-light; }
+    }
+}
+
+// ── Site footer ──────────────────────────────────────
+.site-footer {
+    background:  $green-dark;
+    color:       rgba($white, .65);
+    padding:     52px 0 28px;
+    margin-top:  auto;
+}
+
+.footer-inner {
+    display:         flex;
+    align-items:     flex-start;
+    justify-content: space-between;
+    gap:             40px;
+    margin-bottom:   40px;
+    flex-wrap:       wrap;
+}
+
+.footer {
+    &__brand {
+        font-family:   $font-serif;
+        font-size:     19px;
+        font-weight:   700;
+        color:         $white;
+        margin-bottom: 8px;
+
+        span { color: $green-light; }
+    }
+
+    &__tagline {
+        font-size:   14px;
+        max-width:   240px;
+        line-height: 1.6;
+    }
+
+    &__bottom {
+        border-top:  1px solid rgba($white, .1);
+        padding-top: 22px;
+        text-align:  center;
+        font-size:   13px;
+    }
+}

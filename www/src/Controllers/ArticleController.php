@@ -105,7 +105,7 @@ final class ArticleController
                  SELECT category_id FROM articles_categories WHERE article_id = ?
              )
              AND a.id != ?
-             ORDER BY a.created_at DESC
+             ORDER BY RAND()
              LIMIT ?',
         );
         $stmt->bindValue(1, $articleId, PDO::PARAM_INT);
