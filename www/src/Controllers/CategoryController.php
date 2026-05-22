@@ -63,6 +63,20 @@ final class CategoryController
         return array_map(fn (array $category) => Category::fromArray($category), $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
+    private function removeUploadedImage(?string $imageUrl): void
+    {
+
+        if ($imageUrl === null || !str_starts_with($imageUrl, '/uploads/')) {
+            return;
+        }
+
+        $path = dirname(__DIR__, 2) . $imageUrl;
+
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+
     public function create(string $title, string $description): int
     {
         $stmt = DatabaseController::db()->prepare(
@@ -114,15 +128,16 @@ final class CategoryController
     {
         $db = DatabaseController::db();
 
-        // Собираем ID статей, которые принадлежат только этой категории
+        // Собираем ID и image_url статей, принадлежащих только этой категории
         $stmt = $db->prepare(
-            'SELECT a.id FROM articles a
+            'SELECT a.id, a.image_url FROM articles a
              INNER JOIN articles_categories ac ON ac.article_id = a.id
              WHERE ac.category_id = ?
                AND (SELECT COUNT(*) FROM articles_categories ac2 WHERE ac2.article_id = a.id) = 1',
         );
         $stmt->execute([$id]);
-        $exclusiveIds = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        $exclusiveArticles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $exclusiveIds      = array_column($exclusiveArticles, 'id');
 
         // Удаляем их связи из pivot-таблицы (FK article_id без CASCADE)
         if (!empty($exclusiveIds)) {
@@ -132,6 +147,11 @@ final class CategoryController
 
             $stmt = $db->prepare("DELETE FROM articles WHERE id IN ({$placeholders})");
             $stmt->execute($exclusiveIds);
+
+            // Удаляем загруженные изображения
+            foreach ($exclusiveArticles as $article) {
+                $this->removeUploadedImage($article['image_url'] ?? null);
+            }
         }
 
         // Удаляем оставшиеся связи pivot (общие статьи просто отвязываются)

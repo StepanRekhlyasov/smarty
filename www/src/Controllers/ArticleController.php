@@ -176,12 +176,34 @@ final class ArticleController
     {
         $db = DatabaseController::db();
 
+        $stmt = $db->prepare('SELECT image_url FROM articles WHERE id = ?');
+        $stmt->execute([$id]);
+        $imageUrl = $stmt->fetchColumn();
+
         $stmt = $db->prepare('DELETE FROM articles_categories WHERE article_id = ?');
         $stmt->execute([$id]);
 
         $stmt = $db->prepare('DELETE FROM articles WHERE id = ?');
         $stmt->execute([$id]);
 
-        return $stmt->rowCount() > 0;
+        if ($stmt->rowCount() > 0) {
+            $this->removeUploadedImage($imageUrl ?: null);
+            return true;
+        }
+
+        return false;
+    }
+
+    private function removeUploadedImage(?string $imageUrl): void
+    {
+        if ($imageUrl === null || !str_starts_with($imageUrl, '/uploads/')) {
+            return;
+        }
+
+        $path = dirname(__DIR__, 2) . $imageUrl;
+
+        if (is_file($path)) {
+            @unlink($path);
+        }
     }
 }
