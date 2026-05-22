@@ -1,11 +1,13 @@
 <?php
 
-namespace Smarty\Config;
+namespace Smarty\Controllers;
 
 use PDO;
 
-final class DatabaseConfig
+final class DatabaseController
 {
+    private static ?PDO $connection = null;
+
     public function __construct(
         public readonly string $host,
         public readonly string $port,
@@ -38,8 +40,24 @@ final class DatabaseConfig
 
     public static function connect(): PDO
     {
-        return new PDO(self::fromEnvironment()->dsn(), self::fromEnvironment()->user, self::fromEnvironment()->password, [
+        if (self::$connection !== null) {
+            return self::$connection;
+        }
+
+        $config = self::fromEnvironment();
+        self::$connection = new PDO($config->dsn(), $config->user, $config->password, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
+
+        return self::$connection;
+    }
+
+    public static function db(): PDO
+    {
+        if (self::$connection === null) {
+            throw new \RuntimeException('Database not initialized. Call DatabaseController::connect() in bootstrap.');
+        }
+
+        return self::$connection;
     }
 }

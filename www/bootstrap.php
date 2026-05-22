@@ -17,10 +17,10 @@ spl_autoload_register(static function (string $class): void {
     }
 }, prepend: true);
 
-use Smarty\Config\DatabaseConfig;
+use Smarty\Controllers\DatabaseController;
 use Smarty\Controllers\RouterController;
 
-$db = DatabaseConfig::connect();
-$routes = require __DIR__ . '/src/routes.php';
-$router = new RouterController($routes, $db);
+DatabaseController::connect();
+$routes = require __DIR__ . '/routes.php';
+$router = new RouterController($routes);
 $router->dispatch($_SERVER['REQUEST_URI']);

@@ -2,16 +2,21 @@
 
 namespace Smarty\Controllers;
 
-use PDO;
 use Smarty\Smarty as SmartyEngine;
 
 class RouterController
 {
     private SmartyEngine $smarty;
 
-    public function __construct(public array $routes, public PDO $db)
+    private ArticleController $articleController;
+
+    private CategoryController $categoryController;
+
+    public function __construct(public array $routes)
     {
         $this->smarty = $this->createSmarty();
+        $this->articleController = new ArticleController();
+        $this->categoryController = new CategoryController();
     }
 
     /**
@@ -137,35 +142,10 @@ class RouterController
     private function preparePageData(string $page, array $params): array
     {
         return match ($page) {
-            'article' => ['article' => $this->fetchArticle($params['id'] ?? '')],
-            'category' => ['category' => $this->fetchCategory($params['id'] ?? '')],
+            'article' => ['article' => $this->articleController->findById((int) ($params['id'] ?? 0))],
+            'category' => ['category' => $this->categoryController->findById((int) ($params['id'] ?? 0))],
+            'home' => ['articles' => $this->articleController->list(), 'categories' => $this->categoryController->list()],
             default => [],
         };
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function fetchArticle(string $id): ?array
-    {
-        $stmt = $this->db->prepare('SELECT * FROM articles WHERE id = ?');
-        $stmt->execute([(int) $id]);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row !== false ? $row : null;
-    }
-
-    /**
-     * @return array<string, mixed>|null
-     */
-    private function fetchCategory(string $id): ?array
-    {
-        $stmt = $this->db->prepare('SELECT * FROM categories WHERE id = ?');
-        $stmt->execute([(int) $id]);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $row !== false ? $row : null;
     }
 }
